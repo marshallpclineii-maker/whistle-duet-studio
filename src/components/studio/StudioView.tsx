@@ -296,18 +296,19 @@ export function StudioView({ projectId }: { projectId: string }) {
           : t,
       ),
     );
-    const payload: Record<string, number | string> = {};
-    if (patch.startMs !== undefined) payload["start_ms"] = Math.round(patch.startMs);
-    if (patch.offsetMs !== undefined) payload["offset_ms"] = Math.round(patch.offsetMs);
-    if (patch.durationMs !== undefined) payload["duration_ms"] = Math.round(patch.durationMs);
-    if (patch.gain !== undefined) payload["gain"] = patch.gain;
-    if (patch.fadeInMs !== undefined) payload["fade_in_ms"] = Math.round(patch.fadeInMs);
-    if (patch.fadeOutMs !== undefined) payload["fade_out_ms"] = Math.round(patch.fadeOutMs);
-    if (patch.name !== undefined) payload["name"] = patch.name;
+    const payload: TablesUpdate<"project_clips"> = {};
+    if (patch.startMs !== undefined) payload.start_ms = Math.round(patch.startMs);
+    if (patch.offsetMs !== undefined) payload.offset_ms = Math.round(patch.offsetMs);
+    if (patch.durationMs !== undefined) payload.duration_ms = Math.round(patch.durationMs);
+    if (patch.gain !== undefined) payload.gain = patch.gain;
+    if (patch.fadeInMs !== undefined) payload.fade_in_ms = Math.round(patch.fadeInMs);
+    if (patch.fadeOutMs !== undefined) payload.fade_out_ms = Math.round(patch.fadeOutMs);
+    if (patch.name !== undefined) payload.name = patch.name;
     if (Object.keys(payload).length) {
       void supabase.from("project_clips").update(payload).eq("id", clipId);
     }
   };
+
 
   const addTrack = async () => {
     const { data: row, error } = await supabase
