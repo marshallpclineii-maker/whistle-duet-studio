@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedDeckRouteImport } from './routes/_authenticated/deck'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
+import { Route as AuthenticatedStudioIndexRouteImport } from './routes/_authenticated/studio.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -33,16 +34,24 @@ const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
   path: '/library',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedStudioIndexRoute =
+  AuthenticatedStudioIndexRouteImport.update({
+    id: '/studio/',
+    path: '/studio/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/deck': typeof AuthenticatedDeckRoute
   '/library': typeof AuthenticatedLibraryRoute
+  '/studio/': typeof AuthenticatedStudioIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/deck': typeof AuthenticatedDeckRoute
   '/library': typeof AuthenticatedLibraryRoute
+  '/studio': typeof AuthenticatedStudioIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -50,18 +59,20 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/deck': typeof AuthenticatedDeckRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRoute
+  '/_authenticated/studio/': typeof AuthenticatedStudioIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/deck' | '/library'
+  fullPaths: '/' | '/deck' | '/library' | '/studio/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/deck' | '/library'
+  to: '/' | '/deck' | '/library' | '/studio'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/_authenticated/deck'
     | '/_authenticated/library'
+    | '/_authenticated/studio/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -99,17 +110,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLibraryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/studio/': {
+      id: '/_authenticated/studio/'
+      path: '/studio'
+      fullPath: '/studio/'
+      preLoaderRoute: typeof AuthenticatedStudioIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDeckRoute: typeof AuthenticatedDeckRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
+  AuthenticatedStudioIndexRoute: typeof AuthenticatedStudioIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDeckRoute: AuthenticatedDeckRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
+  AuthenticatedStudioIndexRoute: AuthenticatedStudioIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
