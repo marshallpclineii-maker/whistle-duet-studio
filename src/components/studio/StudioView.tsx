@@ -296,18 +296,17 @@ export function StudioView({ projectId }: { projectId: string }) {
           : t,
       ),
     );
-    void supabase
-      .from("project_clips")
-      .update({
-        start_ms: patch.startMs,
-        offset_ms: patch.offsetMs,
-        duration_ms: patch.durationMs,
-        gain: patch.gain,
-        fade_in_ms: patch.fadeInMs,
-        fade_out_ms: patch.fadeOutMs,
-        name: patch.name,
-      })
-      .eq("id", clipId);
+    const payload: Record<string, number | string> = {};
+    if (patch.startMs !== undefined) payload["start_ms"] = Math.round(patch.startMs);
+    if (patch.offsetMs !== undefined) payload["offset_ms"] = Math.round(patch.offsetMs);
+    if (patch.durationMs !== undefined) payload["duration_ms"] = Math.round(patch.durationMs);
+    if (patch.gain !== undefined) payload["gain"] = patch.gain;
+    if (patch.fadeInMs !== undefined) payload["fade_in_ms"] = Math.round(patch.fadeInMs);
+    if (patch.fadeOutMs !== undefined) payload["fade_out_ms"] = Math.round(patch.fadeOutMs);
+    if (patch.name !== undefined) payload["name"] = patch.name;
+    if (Object.keys(payload).length) {
+      void supabase.from("project_clips").update(payload).eq("id", clipId);
+    }
   };
 
   const addTrack = async () => {
@@ -320,7 +319,11 @@ export function StudioView({ projectId }: { projectId: string }) {
       })
       .select()
       .single();
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
     setTracks((prev) => [
       ...prev,
       {
