@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedDeckRouteImport } from './routes/_authenticated/deck'
+import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -27,27 +28,40 @@ const AuthenticatedDeckRoute = AuthenticatedDeckRouteImport.update({
   path: '/deck',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/deck': typeof AuthenticatedDeckRoute
+  '/library': typeof AuthenticatedLibraryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/deck': typeof AuthenticatedDeckRoute
+  '/library': typeof AuthenticatedLibraryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/deck': typeof AuthenticatedDeckRoute
+  '/_authenticated/library': typeof AuthenticatedLibraryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/deck'
+  fullPaths: '/' | '/deck' | '/library'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/deck'
-  id: '__root__' | '/' | '/_authenticated' | '/_authenticated/deck'
+  to: '/' | '/deck' | '/library'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/_authenticated/deck'
+    | '/_authenticated/library'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -78,15 +92,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDeckRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/library': {
+      id: '/_authenticated/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof AuthenticatedLibraryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDeckRoute: typeof AuthenticatedDeckRoute
+  AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDeckRoute: AuthenticatedDeckRoute,
+  AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
