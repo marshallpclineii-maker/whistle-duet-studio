@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   Download,
   Layers,
@@ -13,7 +13,6 @@ import {
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
@@ -24,6 +23,7 @@ import {
 import { Knob } from "@/components/console/Knob";
 import { Fader, Meter } from "@/components/console/Meter";
 import { supabase } from "@/integrations/supabase/client";
+import type { TablesUpdate } from "@/integrations/supabase/types";
 import { listTakes, loadProject, takeUrl, type FullProject } from "@/lib/db";
 import { formatTime } from "@/lib/audio/wav";
 import {
@@ -173,7 +173,6 @@ function ClipBlock({
 }
 
 export function StudioView({ projectId }: { projectId: string }) {
-  const qc = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ["project", projectId],
     queryFn: () => loadProject(projectId),
@@ -343,7 +342,10 @@ export function StudioView({ projectId }: { projectId: string }) {
 
   const addClip = async (takeId: string) => {
     const track = tracks.find((t) => t.id === selectedTrack) ?? tracks[0];
-    if (!track) return toast.error("Add a track first");
+    if (!track) {
+      toast.error("Add a track first");
+      return;
+    }
     const take = takes.find((t) => t.id === takeId);
     if (!take) return;
     const { data: row, error } = await supabase
@@ -358,7 +360,10 @@ export function StudioView({ projectId }: { projectId: string }) {
       })
       .select()
       .single();
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     setTracks((prev) =>
       prev.map((t) =>
         t.id === track.id
@@ -390,10 +395,14 @@ export function StudioView({ projectId }: { projectId: string }) {
   const splitAtPlayhead = async () => {
     const track = tracks.find((t) => t.clips.some((c) => c.id === selectedClip));
     const clip = track?.clips.find((c) => c.id === selectedClip);
-    if (!track || !clip) return toast.error("Select a clip to splice");
+    if (!track || !clip) {
+      toast.error("Select a clip to splice");
+      return;
+    }
     const cut = playhead - clip.startMs;
     if (cut <= 50 || cut >= clip.durationMs - 50) {
-      return toast.error("Move the playhead inside the clip to splice it");
+      toast.error("Move the playhead inside the clip to splice it");
+      return;
     }
     const { data: row, error } = await supabase
       .from("project_clips")
@@ -408,7 +417,10 @@ export function StudioView({ projectId }: { projectId: string }) {
       })
       .select()
       .single();
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     patchClip(track.id, clip.id, { durationMs: Math.round(cut), fadeOutMs: clip.fadeOutMs });
     setTracks((prev) =>
       prev.map((t) =>
@@ -818,8 +830,3 @@ export function StudioView({ projectId }: { projectId: string }) {
   );
 }
 
-export { toState as _toState };
-
-export function _unusedLabel() {
-  return Label;
-}
