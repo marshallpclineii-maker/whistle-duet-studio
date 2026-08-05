@@ -824,7 +824,7 @@ export function StudioView({ projectId }: { projectId: string }) {
       <p className="text-[11px] text-muted-foreground">
         Drag clips to slide them in time, click the ruler to move the playhead, then splice at
         the playhead to cut a take in two. Everything saves to your cloud account as you go.
-        <span className="sr-only">{qc ? "" : ""}</span>
+        
       </p>
     </div>
   );
