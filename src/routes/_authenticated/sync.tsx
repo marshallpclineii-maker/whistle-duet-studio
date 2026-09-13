@@ -232,11 +232,9 @@ function StudioPage() {
   }, [studio.tracks, studio.selectedClip]);
 
   return (
-    <main className="flex min-h-screen flex-col">
-      <header className="flex flex-wrap items-center gap-3 border-b border-border px-4 py-3">
-        <Link to="/" className="font-display text-base font-semibold">
-          Whistle <span className="text-primary">⚡</span>
-        </Link>
+    <main className="flex flex-col">
+      <header className="flex flex-wrap items-center gap-3 border-b border-border px-1 pb-3">
+        <h1 className="text-sm font-semibold uppercase tracking-[0.2em]">Sync Studio</h1>
         <Input
           value={title}
           onChange={(event) => setTitle(event.target.value)}
