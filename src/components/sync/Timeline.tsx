@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { StudioApi } from "./use-studio";
-import type { Clip, Track } from "@/lib/audio/types";
+import type { Clip, Track } from "@/lib/audio/arrangement";
 
 const LANE_HEIGHT = 84;
 const HEADER_HEIGHT = 26;

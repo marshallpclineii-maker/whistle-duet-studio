@@ -28,7 +28,7 @@ import {
   uploadToYouTube,
   youtubeConfigured,
   type ChannelInfo,
-} from "@/lib/youtube";
+} from "@/lib/youtubeUpload";
 
 export function UploadDialog({
   open,

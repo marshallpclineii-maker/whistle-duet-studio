@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   audioBufferToWav,
-  computePeaks,
+  computeWavePeaks,
   decodeBlob,
   getAudioContext,
   renderMix,
   requestMicStream,
-} from "@/lib/audio/engine";
-import { createRecorder, Player, type RecorderHandle } from "@/lib/audio/player";
-import { arrangementDuration, makeTrack, type Clip, type Track } from "@/lib/audio/types";
+} from "@/lib/audio/syncEngine";
+import { createRecorder, Player, type RecorderHandle } from "@/lib/audio/syncPlayer";
+import { arrangementDuration, makeTrack, type Clip, type Track } from "@/lib/audio/arrangement";
 
 export type StudioOptions = {
   onRecordStart?: () => void;
@@ -73,7 +73,7 @@ export function useStudio(options: StudioOptions = {}) {
 
   const registerBuffer = useCallback((id: string, buffer: AudioBuffer) => {
     buffersRef.current.set(id, buffer);
-    peaksRef.current.set(id, computePeaks(buffer, 2000));
+    peaksRef.current.set(id, computeWavePeaks(buffer, 2000));
     setPeaksVersion((v) => v + 1);
   }, []);
 

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Trash2, Circle } from "lucide-react";
 import type { StudioApi } from "./use-studio";
-import type { Track } from "@/lib/audio/types";
+import type { Track } from "@/lib/audio/arrangement";
 
 export function Mixer({ studio }: { studio: StudioApi }) {
   if (studio.tracks.length === 0) {

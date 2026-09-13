@@ -23,15 +23,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { useStudio } from "@/components/studio/use-studio";
-import { Timeline } from "@/components/studio/Timeline";
-import { Mixer } from "@/components/studio/Mixer";
-import { UploadDialog } from "@/components/studio/UploadDialog";
+import { useStudio } from "@/components/sync/use-studio";
+import { Timeline } from "@/components/sync/Timeline";
+import { Mixer } from "@/components/sync/Mixer";
+import { UploadDialog } from "@/components/sync/UploadDialog";
 import {
   YouTubePlayer,
   parseVideoId,
   type YouTubeController,
-} from "@/components/studio/YouTubePlayer";
+} from "@/components/sync/YouTubePlayer";
 import {
   createSession,
   getSession,
@@ -39,8 +39,8 @@ import {
   uploadAudio,
   downloadAudio,
 } from "@/lib/sessions";
-import { decodeBlob } from "@/lib/audio/engine";
-import type { Arrangement, Track } from "@/lib/audio/types";
+import { decodeBlob } from "@/lib/audio/syncEngine";
+import type { Arrangement, Track } from "@/lib/audio/arrangement";
 
 type StudioSearch = { session?: string | undefined };
 
@@ -185,7 +185,7 @@ function StudioPage() {
         let path = bufferPaths.current.get(bufferId) || "";
         const buffer = studio.getBuffer(bufferId);
         if (!path && buffer) {
-          const { audioBufferToWav } = await import("@/lib/audio/engine");
+          const { audioBufferToWav } = await import("@/lib/audio/syncEngine");
           path = `${id}/${bufferId}.wav`;
           await uploadAudio(path, audioBufferToWav(buffer));
           bufferPaths.current.set(bufferId, path);

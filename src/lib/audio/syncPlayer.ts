@@ -1,5 +1,5 @@
-import { audibleTracks, buildTrackChain, getAudioContext } from "./engine";
-import type { Track } from "./types";
+import { audibleTracks, buildTrackChain, getAudioContext } from "./syncEngine";
+import type { Track } from "./arrangement";
 
 /** Schedules every clip of every audible track relative to a shared start time. */
 export class Player {

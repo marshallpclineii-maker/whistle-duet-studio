@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { Arrangement } from "./audio/types";
+import type { Arrangement } from "./audio/arrangement";
 
 export type SessionRow = {
   id: string;
