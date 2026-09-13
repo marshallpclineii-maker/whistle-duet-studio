@@ -1,3 +1,5 @@
+import { emptyEffects, type EffectsState, type VoiceId } from "./effects";
+
 export type Clip = {
   id: string;
   bufferId: string;
@@ -9,11 +11,10 @@ export type Clip = {
   duration: number;
 };
 
+/** Unified tuning state: a whistle-to-instrument voice plus the effects rack. */
 export type TrackEffects = {
-  reverb: number;
-  delay: number;
-  filterType: "off" | "lowpass" | "highpass";
-  filterFreq: number;
+  voice: VoiceId;
+  rack: EffectsState;
 };
 
 export type Track = {
@@ -41,10 +42,8 @@ export type Arrangement = {
 };
 
 export const defaultEffects = (): TrackEffects => ({
-  reverb: 0,
-  delay: 0,
-  filterType: "off",
-  filterFreq: 1200,
+  voice: "raw",
+  rack: emptyEffects(),
 });
 
 export const trackColors = [

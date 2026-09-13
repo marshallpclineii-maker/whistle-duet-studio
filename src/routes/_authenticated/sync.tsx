@@ -44,7 +44,7 @@ import type { Arrangement, Track } from "@/lib/audio/types";
 
 type StudioSearch = { session?: string | undefined };
 
-export const Route = createFileRoute("/_authenticated/studio")({
+export const Route = createFileRoute("/_authenticated/sync")({
   validateSearch: (search: Record<string, unknown>): StudioSearch => ({
     session: typeof search["session"] === "string" ? search["session"] : undefined,
   }),
