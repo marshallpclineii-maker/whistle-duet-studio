@@ -145,7 +145,17 @@ export function Timeline({ studio, pxPerSecond }: { studio: StudioApi; pxPerSeco
     ctx.moveTo(px, 0);
     ctx.lineTo(px, height);
     ctx.stroke();
-  }, [contentWidth, height, pxPerSecond, tracks, playhead, selectedClip, getPeaks, studio, peaksVersion]);
+  }, [
+    contentWidth,
+    height,
+    pxPerSecond,
+    tracks,
+    playhead,
+    selectedClip,
+    getPeaks,
+    studio,
+    peaksVersion,
+  ]);
 
   useEffect(() => {
     draw();

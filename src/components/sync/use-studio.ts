@@ -151,12 +151,9 @@ export function useStudio(options: StudioOptions = {}) {
     return created;
   }, [commit]);
 
-  const updateTrack = useCallback(
-    (id: string, patch: Partial<Track>) => {
-      setTracksState((current) => current.map((t) => (t.id === id ? { ...t, ...patch } : t)));
-    },
-    [],
-  );
+  const updateTrack = useCallback((id: string, patch: Partial<Track>) => {
+    setTracksState((current) => current.map((t) => (t.id === id ? { ...t, ...patch } : t)));
+  }, []);
 
   const removeTrack = useCallback(
     (id: string) => commit((current) => current.filter((t) => t.id !== id)),
@@ -304,14 +301,11 @@ export function useStudio(options: StudioOptions = {}) {
     return { blob: audioBufferToWav(rendered), duration: total };
   }, [tracks]);
 
-  const loadArrangement = useCallback(
-    (nextTracks: Track[]) => {
-      historyRef.current = { past: [], future: [] };
-      setTracksState(nextTracks);
-      setPlayhead(0);
-    },
-    [],
-  );
+  const loadArrangement = useCallback((nextTracks: Track[]) => {
+    historyRef.current = { past: [], future: [] };
+    setTracksState(nextTracks);
+    setPlayhead(0);
+  }, []);
 
   useEffect(() => {
     return () => {

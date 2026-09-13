@@ -248,8 +248,17 @@ function StudioPage() {
           <Button asChild variant="ghost" size="sm">
             <Link to="/sessions">Sessions</Link>
           </Button>
-          <Button variant="secondary" size="sm" onClick={() => void saveSession()} disabled={saving}>
-            {saving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => void saveSession()}
+            disabled={saving}
+          >
+            {saving ? (
+              <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="mr-1 h-4 w-4" />
+            )}
             Save
           </Button>
           <Button variant="secondary" size="sm" onClick={() => void exportMix()}>

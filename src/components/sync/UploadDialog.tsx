@@ -117,7 +117,9 @@ export function UploadDialog({
 
         {!youtubeConfigured() ? (
           <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-            <p className="font-medium text-foreground">YouTube uploads need a Google OAuth client</p>
+            <p className="font-medium text-foreground">
+              YouTube uploads need a Google OAuth client
+            </p>
             <ol className="mt-2 list-decimal space-y-1 pl-4">
               <li>Create an OAuth 2.0 Web client in the Google Cloud console.</li>
               <li>Enable the YouTube Data API v3 for that project.</li>

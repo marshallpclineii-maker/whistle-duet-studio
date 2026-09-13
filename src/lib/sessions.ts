@@ -79,9 +79,7 @@ export async function downloadAudio(path: string): Promise<Blob> {
 }
 
 export async function signedAudioUrl(path: string, seconds = 3600) {
-  const { data, error } = await supabase.storage
-    .from("recordings")
-    .createSignedUrl(path, seconds);
+  const { data, error } = await supabase.storage.from("recordings").createSignedUrl(path, seconds);
   if (error) throw error;
   return data.signedUrl;
 }
