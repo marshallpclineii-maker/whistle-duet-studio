@@ -16,6 +16,8 @@ export class MasterMixer {
 
     this.masterBus = context.createGain();
     this.monitorBus = context.createGain();
+    this.monitorBus.gain.value = 0; // Starts Bluetooth safe (OFF)
+
 
     this.recorderOutput = context.createMediaStreamDestination();
 
