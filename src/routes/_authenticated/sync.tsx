@@ -136,7 +136,7 @@ function StudioPage() {
     if (!data.user) throw new Error("Please sign in again");
     const row = await createSession(data.user.id, title);
     setSessionId(row.id);
-    void navigate({ to: "/studio", search: { session: row.id }, replace: true });
+    void navigate({ to: "/sync", search: { session: row.id }, replace: true });
     return row.id;
   }, [navigate, sessionId, title]);
 

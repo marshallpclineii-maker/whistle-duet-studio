@@ -53,7 +53,7 @@ function SessionsPage() {
         </div>
         <div className="flex gap-2">
           <Button asChild size="sm">
-            <Link to="/studio">
+            <Link to="/sync">
               <Plus className="mr-1 h-4 w-4" /> New session
             </Link>
           </Button>
@@ -80,7 +80,7 @@ function SessionsPage() {
             <li key={session.id} className="panel flex items-center gap-3 p-4">
               <div className="min-w-0 flex-1">
                 <Link
-                  to="/studio"
+                  to="/sync"
                   search={{ session: session.id }}
                   className="font-medium hover:text-primary"
                 >
