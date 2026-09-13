@@ -1,15 +1,7 @@
 /** Effect chain definitions + Web Audio graph builder. */
 
 export type EffectId =
-  | "eq"
-  | "filter"
-  | "reverb"
-  | "delay"
-  | "chorus"
-  | "distortion"
-  | "compressor"
-  | "gate"
-  | "pitch";
+  "eq" | "filter" | "reverb" | "delay" | "chorus" | "distortion" | "compressor" | "gate" | "pitch";
 
 export type EffectSettings = Record<string, number>;
 export type EffectsState = Partial<Record<EffectId, { on: boolean; params: EffectSettings }>>;

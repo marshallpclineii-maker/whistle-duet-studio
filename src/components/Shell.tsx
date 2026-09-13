@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { AudioLines, LibraryBig, SlidersHorizontal, LogOut } from "lucide-react";
+import { AudioLines, LibraryBig, SlidersHorizontal, LogOut, Youtube, ListMusic } from "lucide-react";
 import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
@@ -8,6 +8,8 @@ const NAV = [
   { to: "/deck", label: "Live Deck", icon: AudioLines },
   { to: "/library", label: "Library", icon: LibraryBig },
   { to: "/studio", label: "Studio", icon: SlidersHorizontal },
+  { to: "/sync", label: "Sync", icon: Youtube },
+  { to: "/sessions", label: "Sessions", icon: ListMusic },
 ] as const;
 
 export function Shell({ children }: { children: ReactNode }) {

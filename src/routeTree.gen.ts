@@ -14,6 +14,8 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDeckRouteImport } from './routes/_authenticated/deck'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
+import { Route as AuthenticatedSessionsRouteImport } from './routes/_authenticated/sessions'
+import { Route as AuthenticatedSyncRouteImport } from './routes/_authenticated/sync'
 import { Route as AuthenticatedStudioIndexRouteImport } from './routes/_authenticated/studio.index'
 import { Route as AuthenticatedStudioProjectIdRouteImport } from './routes/_authenticated/studio.$projectId'
 
@@ -41,6 +43,16 @@ const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
   path: '/library',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSessionsRoute = AuthenticatedSessionsRouteImport.update({
+  id: '/sessions',
+  path: '/sessions',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSyncRoute = AuthenticatedSyncRouteImport.update({
+  id: '/sync',
+  path: '/sync',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedStudioIndexRoute =
   AuthenticatedStudioIndexRouteImport.update({
     id: '/studio/',
@@ -59,6 +71,8 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/deck': typeof AuthenticatedDeckRoute
   '/library': typeof AuthenticatedLibraryRoute
+  '/sessions': typeof AuthenticatedSessionsRoute
+  '/sync': typeof AuthenticatedSyncRoute
   '/studio/$projectId': typeof AuthenticatedStudioProjectIdRoute
   '/studio/': typeof AuthenticatedStudioIndexRoute
 }
@@ -67,6 +81,8 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/deck': typeof AuthenticatedDeckRoute
   '/library': typeof AuthenticatedLibraryRoute
+  '/sessions': typeof AuthenticatedSessionsRoute
+  '/sync': typeof AuthenticatedSyncRoute
   '/studio/$projectId': typeof AuthenticatedStudioProjectIdRoute
   '/studio': typeof AuthenticatedStudioIndexRoute
 }
@@ -77,15 +93,32 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/deck': typeof AuthenticatedDeckRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRoute
+  '/_authenticated/sessions': typeof AuthenticatedSessionsRoute
+  '/_authenticated/sync': typeof AuthenticatedSyncRoute
   '/_authenticated/studio/$projectId': typeof AuthenticatedStudioProjectIdRoute
   '/_authenticated/studio/': typeof AuthenticatedStudioIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/deck' | '/library' | '/studio/$projectId' | '/studio/'
+    | '/'
+    | '/auth'
+    | '/deck'
+    | '/library'
+    | '/sessions'
+    | '/sync'
+    | '/studio/$projectId'
+    | '/studio/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/deck' | '/library' | '/studio/$projectId' | '/studio'
+  to:
+    | '/'
+    | '/auth'
+    | '/deck'
+    | '/library'
+    | '/sessions'
+    | '/sync'
+    | '/studio/$projectId'
+    | '/studio'
   id:
     | '__root__'
     | '/'
@@ -93,6 +126,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/deck'
     | '/_authenticated/library'
+    | '/_authenticated/sessions'
+    | '/_authenticated/sync'
     | '/_authenticated/studio/$projectId'
     | '/_authenticated/studio/'
   fileRoutesById: FileRoutesById
@@ -140,6 +175,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLibraryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/sessions': {
+      id: '/_authenticated/sessions'
+      path: '/sessions'
+      fullPath: '/sessions'
+      preLoaderRoute: typeof AuthenticatedSessionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sync': {
+      id: '/_authenticated/sync'
+      path: '/sync'
+      fullPath: '/sync'
+      preLoaderRoute: typeof AuthenticatedSyncRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/studio/': {
       id: '/_authenticated/studio/'
       path: '/studio'
@@ -160,6 +209,8 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDeckRoute: typeof AuthenticatedDeckRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
+  AuthenticatedSessionsRoute: typeof AuthenticatedSessionsRoute
+  AuthenticatedSyncRoute: typeof AuthenticatedSyncRoute
   AuthenticatedStudioProjectIdRoute: typeof AuthenticatedStudioProjectIdRoute
   AuthenticatedStudioIndexRoute: typeof AuthenticatedStudioIndexRoute
 }
@@ -167,6 +218,8 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDeckRoute: AuthenticatedDeckRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
+  AuthenticatedSessionsRoute: AuthenticatedSessionsRoute,
+  AuthenticatedSyncRoute: AuthenticatedSyncRoute,
   AuthenticatedStudioProjectIdRoute: AuthenticatedStudioProjectIdRoute,
   AuthenticatedStudioIndexRoute: AuthenticatedStudioIndexRoute,
 }
@@ -182,3 +235,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
