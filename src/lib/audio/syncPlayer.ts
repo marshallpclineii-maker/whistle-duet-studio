@@ -37,8 +37,9 @@ export class Player {
         const when = now + Math.max(0, clip.start - from);
         const source = ctx.createBufferSource();
         source.buffer = buffer;
+        source.playbackRate.value = chain.rate;
         source.connect(chain.input);
-        source.start(when, clip.offset + skip, clip.duration - skip);
+        source.start(when, clip.offset + skip, (clip.duration - skip) * chain.rate);
         this.sources.push(source);
         last = Math.max(last, clipEnd);
       }
