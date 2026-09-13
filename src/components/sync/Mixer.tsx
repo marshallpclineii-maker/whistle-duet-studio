@@ -1,6 +1,7 @@
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -10,7 +11,14 @@ import {
 } from "@/components/ui/select";
 import { Trash2, Circle } from "lucide-react";
 import type { StudioApi } from "./use-studio";
-import type { Track } from "@/lib/audio/arrangement";
+import type { Track, TrackEffects } from "@/lib/audio/arrangement";
+import {
+  EFFECT_DEFS,
+  VOICES,
+  defaultEffectParams,
+  type EffectId,
+  type VoiceId,
+} from "@/lib/audio/effects";
 
 export function Mixer({ studio }: { studio: StudioApi }) {
   if (studio.tracks.length === 0) {
@@ -32,9 +40,38 @@ export function Mixer({ studio }: { studio: StudioApi }) {
 
 function ChannelStrip({ track, studio }: { track: Track; studio: StudioApi }) {
   const update = (patch: Partial<Track>) => studio.updateTrack(track.id, patch);
+  const effects: TrackEffects = track.effects;
+
+  const setVoice = (voice: VoiceId) => update({ effects: { ...effects, voice } });
+
+  const toggleEffect = (id: EffectId, on: boolean) => {
+    const current = effects.rack[id];
+    update({
+      effects: {
+        ...effects,
+        rack: {
+          ...effects.rack,
+          [id]: { on, params: current?.params ?? defaultEffectParams(id) },
+        },
+      },
+    });
+  };
+
+  const setParam = (id: EffectId, key: string, value: number) => {
+    const current = effects.rack[id] ?? { on: true, params: defaultEffectParams(id) };
+    update({
+      effects: {
+        ...effects,
+        rack: {
+          ...effects.rack,
+          [id]: { on: current.on, params: { ...current.params, [key]: value } },
+        },
+      },
+    });
+  };
 
   return (
-    <div className="panel flex w-52 shrink-0 flex-col gap-3 p-3">
+    <div className="panel flex w-60 shrink-0 flex-col gap-3 p-3">
       <div className="flex items-center gap-2">
         <span className="h-3 w-3 rounded-full" style={{ backgroundColor: track.color }} />
         <Input
@@ -73,7 +110,7 @@ function ChannelStrip({ track, studio }: { track: Track; studio: StudioApi }) {
         </Button>
       </div>
 
-      <Knob
+      <Fader
         label="Volume"
         value={track.volume}
         min={0}
@@ -82,64 +119,75 @@ function ChannelStrip({ track, studio }: { track: Track; studio: StudioApi }) {
         onChange={(v) => update({ volume: v })}
         display={`${Math.round(track.volume * 100)}%`}
       />
-      <Knob
+      <Fader
         label="Pan"
         value={track.pan}
         min={-1}
         max={1}
         step={0.02}
         onChange={(v) => update({ pan: v })}
-        display={track.pan === 0 ? "C" : `${track.pan < 0 ? "L" : "R"}${Math.round(Math.abs(track.pan) * 100)}`}
-      />
-      <Knob
-        label="Reverb"
-        value={track.effects.reverb}
-        min={0}
-        max={1}
-        step={0.01}
-        onChange={(v) => update({ effects: { ...track.effects, reverb: v } })}
-        display={`${Math.round(track.effects.reverb * 100)}%`}
-      />
-      <Knob
-        label="Delay"
-        value={track.effects.delay}
-        min={0}
-        max={1}
-        step={0.01}
-        onChange={(v) => update({ effects: { ...track.effects, delay: v } })}
-        display={`${Math.round(track.effects.delay * 100)}%`}
+        display={
+          track.pan === 0
+            ? "C"
+            : `${track.pan < 0 ? "L" : "R"}${Math.round(Math.abs(track.pan) * 100)}`
+        }
       />
 
       <div className="space-y-1">
-        <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Filter</span>
-        <Select
-          value={track.effects.filterType}
-          onValueChange={(value) =>
-            update({
-              effects: { ...track.effects, filterType: value as Track["effects"]["filterType"] },
-            })
-          }
-        >
+        <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Voice</span>
+        <Select value={effects.voice} onValueChange={(v) => setVoice(v as VoiceId)}>
           <SelectTrigger className="h-8 text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="off">Off</SelectItem>
-            <SelectItem value="lowpass">Low pass</SelectItem>
-            <SelectItem value="highpass">High pass</SelectItem>
+            {VOICES.map((voice) => (
+              <SelectItem key={voice.id} value={voice.id}>
+                {voice.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
-        {track.effects.filterType !== "off" && (
-          <Knob
-            label="Cutoff"
-            value={track.effects.filterFreq}
-            min={80}
-            max={12000}
-            step={10}
-            onChange={(v) => update({ effects: { ...track.effects, filterFreq: v } })}
-            display={`${Math.round(track.effects.filterFreq)} Hz`}
-          />
-        )}
+      </div>
+
+      <div className="space-y-2">
+        <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
+          Effects rack
+        </span>
+        {EFFECT_DEFS.map((def) => {
+          const state = effects.rack[def.id];
+          const on = state?.on ?? false;
+          return (
+            <div key={def.id} className="rounded-sm border border-border/70 p-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium">{def.label}</span>
+                <Switch
+                  checked={on}
+                  onCheckedChange={(checked) => toggleEffect(def.id, checked)}
+                  aria-label={`${def.label} on ${track.name}`}
+                />
+              </div>
+              {on && (
+                <div className="mt-2 space-y-2">
+                  {def.params.map((param) => {
+                    const value = state?.params[param.key] ?? param.def;
+                    return (
+                      <Fader
+                        key={param.key}
+                        label={param.label}
+                        value={value}
+                        min={param.min}
+                        max={param.max}
+                        step={param.step}
+                        onChange={(v) => setParam(def.id, param.key, v)}
+                        display={`${Math.round(value * 100) / 100}${param.unit ? ` ${param.unit}` : ""}`}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       <Button
@@ -154,7 +202,7 @@ function ChannelStrip({ track, studio }: { track: Track; studio: StudioApi }) {
   );
 }
 
-function Knob({
+function Fader({
   label,
   value,
   min,
