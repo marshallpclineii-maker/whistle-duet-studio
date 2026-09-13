@@ -193,9 +193,7 @@ export async function loadProject(id: string): Promise<FullProject> {
     project,
     tracks: (tracks ?? []).map((t) => ({
       ...t,
-      clips: clips
-        .filter((c) => c.studio_track_id === t.id)
-        .map((c) => ({ ...c, take: c.takes })),
+      clips: clips.filter((c) => c.studio_track_id === t.id).map((c) => ({ ...c, take: c.takes })),
     })),
   };
 }

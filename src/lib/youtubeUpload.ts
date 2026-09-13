@@ -112,7 +112,10 @@ export async function fetchMyChannel(token: string): Promise<ChannelInfo | null>
   );
   if (!response.ok) throw new Error(await response.text());
   const json = (await response.json()) as {
-    items?: { id: string; snippet: { title: string; thumbnails?: { default?: { url: string } } } }[];
+    items?: {
+      id: string;
+      snippet: { title: string; thumbnails?: { default?: { url: string } } };
+    }[];
   };
   const item = json.items?.[0];
   if (!item) return null;
