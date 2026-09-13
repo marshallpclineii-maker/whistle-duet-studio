@@ -50,17 +50,20 @@ export const Route = createFileRoute("/_authenticated/sync")({
   }),
   head: () => ({
     meta: [
-      { title: "Studio — Whistle Multi-Track Recorder" },
+      { title: "Sync Studio — WhistleDeck" },
       {
         name: "description",
         content:
-          "Record, overdub, splice and mix live takes over a YouTube backing track, then publish the mixdown to your channel.",
+          "Record, overdub, splice and tune whistle takes locked to a YouTube backing track, then export or publish the mix.",
       },
-      { property: "og:title", content: "Whistle Studio" },
+      { property: "og:title", content: "Sync Studio — WhistleDeck" },
       {
         property: "og:description",
-        content: "Multi-track browser recording with overdubs, splicing and YouTube publishing.",
+        content:
+          "Multitrack whistle recording synced to YouTube, with the full effects rack and instrument voices.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: StudioPage,
